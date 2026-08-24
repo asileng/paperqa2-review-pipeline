@@ -198,18 +198,30 @@ class EvidenceTracker:
 
 
 def fmt_contexts(ctxs: list, start_idx: int = 1) -> str:
+    # 元数据去重（GLUE v2-dev）：完整 citation 只在合并池头部出现一次，
+    # 条目内不再重复 source= 行；anchor 自带 docname+页码，定位能力不损。
     lines = []
     for i, c in enumerate(ctxs, start_idx):
         text = getattr(c, "text", None)
         anchor = getattr(text, "name", "")
-        cite = ""
+        score = getattr(c, "score", None)
+        lines.append(f"[E{i:02d}] score={score} | anchor={anchor}\n{c.context}\n")
+    return "\n".join(lines)
+
+
+def pool_header(ctxs: list) -> str:
+    """合并池头部：完整 citation 与 docname 仅此处出现一次。"""
+    for c in ctxs:
+        text = getattr(c, "text", None)
+        cite, docname = "", ""
         try:
             cite = text.doc.formatted_citation
+            docname = getattr(text.doc, "docname", "")
         except Exception:
             pass
-        score = getattr(c, "score", None)
-        lines.append(f"[E{i:02d}] score={score} | anchor={anchor} | source={cite}\n{c.context}\n")
-    return "\n".join(lines)
+        if cite or docname:
+            return f"[pool source] {cite} | docname={docname}\n"
+    return ""
 
 
 # ---------- 产物级 resume ----------
@@ -315,6 +327,119 @@ def slugify(s: str) -> str:
     return s[:60] or "concept"
 
 
+# ---------- 确定性引用解析（GLUE v2-dev，无 LLM） ----------
+
+_INTEXT_PAREN_RE = re.compile(r"\(([^()]{3,80}?)\s(\d{4}[a-z]?)\)")
+_INTEXT_NARR_RE = re.compile(
+    r"\b([A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+(?:-[A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+)*)"
+    r"\s+et al\.?\s*\((\d{4}[a-z]?)\)"
+)
+# 姓氏（含连字符，如 Abd-Alrazaq / Smith-Jones）
+_SURNAME_RE = re.compile(
+    r"[A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+(?:-[A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+)*"
+)
+_YEAR_RE = re.compile(r"(\d{4}[a-z]?)")
+_BIB_HEAD_RE = re.compile(r"(?im)^\s*(references|bibliography|参考文献|引用文献)\s*$")
+
+
+def _norm_surname(s: str) -> str:
+    return re.sub(r"[^a-zàáâäéèêëíìîïóòôöúùûüñç]", "", s.lower())
+
+
+def _extract_inttext_citations(text: str) -> list[tuple[str, str]]:
+    """从 PASS 1 文本抽取 (姓氏, 年份) 夹注标识，去重保序。"""
+    found = []
+    for m in _INTEXT_PAREN_RE.finditer(text):
+        lead = m.group(1).strip()
+        surnames = _SURNAME_RE.findall(lead)
+        if surnames:
+            found.append((surnames[0], m.group(2)))
+    for m in _INTEXT_NARR_RE.finditer(text):
+        found.append((m.group(1), m.group(2)))
+    seen, out = set(), []
+    for sur, year in found:
+        k = (_norm_surname(sur), year)
+        if k not in seen:
+            seen.add(k)
+            out.append((sur, year))
+    return out
+
+
+def _collect_doc_text(docs) -> str:
+    # paperqa Docs: 参考文献文本在 docs.texts（Text 对象扁平列表），
+    # 不在 docs.docs（dict[dockey, DocDetails]）。
+    parts = []
+    try:
+        for t in getattr(docs, "texts", []) or []:
+            parts.append(getattr(t, "text", "") or "")
+    except Exception:
+        pass
+    return "\n".join(parts)
+
+
+_BIB_MARKER_RE = re.compile(r"^\s*\[?\d+\]?\.?\s*")
+_AUTHOR_SPLIT_RE = re.compile(r",\s*and\s+|,\s*|\s+and\s+|\s*&\s*")
+
+
+def _extract_bib_entries(full: str) -> list[str]:
+    m = _BIB_HEAD_RE.search(full)
+    bib = full[m.end():] if m else full
+    raw = re.split(r"\n\s*(?=\[\d+\]|\d{1,3}\s*[\.\)]\s)", bib)
+    entries = []
+    for e in raw:
+        e = e.strip()
+        if len(e) >= 25 and _YEAR_RE.search(e):
+            entries.append(_BIB_MARKER_RE.sub("", e))
+    return entries
+
+
+def _bib_surnames(entry: str) -> list[str]:
+    """抽取条目作者部分（年份之前）各作者的姓氏（每段末词）。"""
+    ym = _YEAR_RE.search(entry)
+    if not ym:
+        return []
+    author_part = entry[:ym.start()].strip().rstrip(". ")
+    out = []
+    for chunk in _AUTHOR_SPLIT_RE.split(author_part):
+        chunk = chunk.strip().rstrip(".")
+        if not chunk:
+            continue
+        toks = chunk.split()
+        if toks:
+            out.append(toks[-1])
+    return out
+
+
+def resolve_references(docs, e1_text: str) -> str:
+    """确定性解析：把 PASS 1 的夹注标识映射到本文参考文献表条目（含题名）。无 LLM。"""
+    cites = _extract_inttext_citations(e1_text)
+    full = _collect_doc_text(docs)
+    entries = _extract_bib_entries(full)
+    index = {}
+    for e in entries:
+        ym = _YEAR_RE.search(e)
+        if not ym:
+            continue
+        year = ym.group(1)
+        for sur in _bib_surnames(e):
+            index.setdefault((_norm_surname(sur), year), []).append(e)
+    if not cites:
+        return "_未从 PASS 1 提取到可解析的夹注标识。_\n"
+    lines = ["| 夹注标识 | 解析到的参考文献条目（含题名） |", "|---|---|"]
+    for sur, year in cites:
+        matched = index.get((_norm_surname(sur), year))
+        if matched:
+            entry_md = matched[0].replace("\n", " ").strip()
+            if len(entry_md) > 600:
+                entry_md = entry_md[:600] + "…"
+            lines.append(f"| ({sur}, {year}) | {entry_md} |")
+        else:
+            lines.append(
+                f"| ({sur}, {year}) | — 未在本文参考文献表中解析到（可能为夹注变体或引用自次级来源） |"
+            )
+    return "\n".join(lines) + "\n"
+
+
 # ---------- 主流程 ----------
 
 async def run_one(entry: dict, resume: bool = True, archive: bool = True,
@@ -407,7 +532,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             log(key, f"{pname} resumed")
             continue
         pools_dir.mkdir(parents=True, exist_ok=True)
-        parts, idx, secs = [], 1, {}
+        parts, idx, secs, all_ctxs = [], 1, {}, []
         for tag, rname in retrievals:
             ctxs, s = await tracker.retrieve(docs, settings, load_prompt(rname), key, f"{pname}/{tag}")
             sub = fmt_contexts(ctxs, idx)
@@ -415,7 +540,8 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             secs[tag] = s
             idx += len(ctxs)
             parts.append(sub)
-        pool_md = "\n".join(p for p in parts if p.strip())
+            all_ctxs.extend(ctxs)
+        pool_md = pool_header(all_ctxs) + "\n".join(p for p in parts if p.strip())
         merged_path.write_text(pool_md, encoding="utf-8")
         user_msg = (
             f"{GLOBAL}\n\n=== RETRIEVED EVIDENCE ({pname.upper()} POOL) ===\n\n{pool_md}\n\n"
@@ -439,6 +565,22 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
                          "pool_path": str(merged_path), "seconds": gsec}
         book.mark_current()
         log(key, f"{pname} extracted in {gsec}s")
+
+    # ---- PASS 1 引用解析（确定性脚本，无 LLM；GLUE v2-dev） ----
+    ref_md_path = out_dir / "e1.references.md"
+    e1_ans_path = out_dir / "e1.answer.md"
+    if e1_ans_path.exists() and not ref_md_path.exists():
+        try:
+            e1_text = e1_ans_path.read_text(encoding="utf-8")
+            ref_md = resolve_references(docs, e1_text)
+            ref_md_path.write_text(
+                "# Resolved Cited References (deterministic, script-generated)\n\n"
+                "> 由固定脚本从本文参考文献表确定性解析，未调用 LLM。\n\n" + ref_md,
+                encoding="utf-8",
+            )
+            log(key, "e1.references.md generated (deterministic)")
+        except Exception as exc:
+            log(key, f"WARN reference resolution failed: {exc}")
 
     # ---- GATE ----
     gate_path = out_dir / "gate.json"
@@ -465,7 +607,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             log(key, "gate C -> light probe retrieval")
             probe_ctxs, ps = await tracker.retrieve(docs, settings, load_prompt("r4a"), key, "gate-probe")
             probe_used = True
-            probe_md = fmt_contexts(probe_ctxs)
+            probe_md = pool_header(probe_ctxs) + fmt_contexts(probe_ctxs)
             pools_dir.mkdir(parents=True, exist_ok=True)
             probe_pool_path.write_text(probe_md, encoding="utf-8")
             gate_prompt2 = gate_prompt + f"\n\n=== ADDITIONAL PROBE EVIDENCE (lightweight retrieval) ===\n\n{probe_md}"
@@ -501,7 +643,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             pass4 = {"skipped": False, "resumed": True, "extraction_path": str(ans4), "pool_path": str(pool4m)}
             log(key, "pass4 resumed")
         else:
-            parts, idx, secs = [], 1, {}
+            parts, idx, secs, all_ctxs = [], 1, {}, []
             for tag, rname in (("4a", "r4a"), ("4b", "r4b")):
                 ctxs, s = await tracker.retrieve(docs, settings, load_prompt(rname), key, f"pass4/{tag}")
                 sub = fmt_contexts(ctxs, idx)
@@ -509,7 +651,8 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
                 secs[tag] = s
                 idx += len(ctxs)
                 parts.append(sub)
-            pool_md = "\n".join(p for p in parts if p.strip())
+                all_ctxs.extend(ctxs)
+            pool_md = pool_header(all_ctxs) + "\n".join(p for p in parts if p.strip())
             pool4m.parent.mkdir(parents=True, exist_ok=True)
             pool4m.write_text(pool_md, encoding="utf-8")
             text, usg, gsec = await gen(
@@ -544,7 +687,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         ctxs, s = await tracker.retrieve(
             docs, settings, load_prompt("backfill_r").replace("{concept}", concept), key, f"backfill:{slug}"
         )
-        pool_md = fmt_contexts(ctxs)
+        pool_md = pool_header(ctxs) + fmt_contexts(ctxs)
         bf_pool.write_text(pool_md, encoding="utf-8")
         text, usg, gsec = await gen(
             f"{GLOBAL}\n\n=== RETRIEVED EVIDENCE (CONCEPT: {concept}) ===\n\n{pool_md}\n\n"
@@ -597,6 +740,11 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         for b in backfills:
             body_parts.append(f"\n## {b['concept']}\n\n{Path(b['path']).read_text(encoding='utf-8').strip()}\n")
             audit_texts.append(Path(b["path"]).read_text(encoding="utf-8"))
+    ref_md_path = out_dir / "e1.references.md"
+    if ref_md_path.exists():
+        _ref_txt = ref_md_path.read_text(encoding="utf-8").strip()
+        body_parts.append(f"\n---\n\n# RESOLVED CITED REFERENCES (deterministic)\n\n{_ref_txt}\n")
+        audit_texts.append(_ref_txt)
     body = "".join(body_parts)
     audit = audit_citations(body)
     scheme = derive_citation_scheme(audit)
@@ -634,6 +782,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         "passes": {**passes, "pass4": pass4},
         "sections": sections_by_pass,
         "backfill": backfills,
+        "resolved_references_md_path": str(ref_md_path) if ref_md_path.exists() else None,
         "modules": [],
         "relations": [],
         "provenance": {

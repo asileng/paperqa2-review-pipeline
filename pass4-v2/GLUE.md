@@ -93,3 +93,38 @@ modules/relations 保持空数组（仓库铁律：不自动推断 roadmap 归�
 batch.py：asyncio 信号量并发（默认 4 篇同进程，共享 bge-m3 与 litellm 连接池）、
 失败隔离（单篇崩溃不影响队列）、失败自动二扫重试、每阶段 asyncio.wait_for 超时、
 manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（存在+meta 匹配+prompt 哈希一致才跳过）。
+
+## 八、v2-dev 偏差登记（提示词优化，2026-08-24）
+
+研究者反思两处提示词缺陷，经授权对 pass4-v2 做最小偏离母本改造（v1 冻结不动）：
+
+1. **元数据重复浪费（问题 2）**
+   - 根因：`00_global_rules.md` 原 L7 要求"每次都收集 metadata"，且 GLOBAL 块注入到
+     每一次 Extraction/Gate/Backfill 的 user message；更隐蔽的是 `fmt_contexts` 给**每条
+     证据**都附 `anchor=<docname pages>` + `source=<完整格式化引用>`，同一篇论文 ×
+     evidence_k × 8+ 池次全量重复。
+   - 修复：
+     - `00_global_rules.md` L7 改为"metadata 由系统在记录头部记录一次，输出不重复；
+       仅 PASS 1 在文献定位叙事确需时陈述一次"。
+     - `fmt_contexts` 去掉每条目 `source=` 行；新增 `pool_header()` 在合并池头部印一次
+       完整 citation + docname；条目保留 `[E##] score | anchor`（anchor 含 docname+页码，
+       定位能力不损）。所有调用点（pass 池 / gate probe / pass4 / backfill）均改为
+       `pool_header(ctxs) + fmt_contexts(ctxs)`。
+
+2. **prior work 无法查询（问题 1）**
+   - 根因：`e1.md` "Relevant prior research" 四字段缺"被引文献身份标识"，模型可泛述
+     "先前研究表明 X" 而不点名，记录后无从回查。
+   - 修复：
+     - `e1.md` 每项新增首个必填字段 **Cited reference**：要求原样摘录文中夹注身份
+       （作者-年份），**明确禁止模型猜测题名**——题名由脚本确定性解析。
+     - 新增 `resolve_references(docs, e1_text)`（runner.py，无 LLM）：从 PASS 1 文本抽取
+       (姓氏,年份) 夹注标识 → 从本文 `docs.texts` 确定性抽取参考文献表 → 按
+       (姓氏归一,年份) 映射 → 产出 `e1.references.md`（含题名的条目表）+ 写入
+       `structured_record.md` 末节 + record.json `resolved_references_md_path`。
+     - 研究者明确：title 一定 given、references 表检索要做、这部分"甚至可以用固定脚本做"
+       ——故走确定性脚本而非 LLM，零幻觉风险。
+
+3. **续跑影响（诚实披露）**
+   - 上述两处提示词改动使 `prompts_sha256` 全变 → 已完成的 14 篇若续跑会被 `ResumeBook`
+     判为配置不匹配而**重跑**；未跑的 27+3 篇正好用新提示词，无影响；14 篇旧产物保持
+     不动（不重跑即不碰）。此为预期代价，研究者已知情。
