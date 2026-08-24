@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+results/
+results-archive/
+logs/
+papers/
+*.pkl
+queue/
+hf_cache/
+.playwright-mcp/
+*.tmp

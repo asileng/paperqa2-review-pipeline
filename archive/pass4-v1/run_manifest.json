@@ -1,0 +1,321 @@
+{
+ "schema": "pass4-v1-manifest",
+ "created_utc": "2026-08-23T23:03:03.913444+00:00",
+ "papers": {
+  "XVC52ZGY": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:50:48.720720+00:00",
+   "finished_utc": "2026-08-24T00:51:36.906397+00:00"
+  },
+  "86CXZH5B": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:03:03.922451+00:00",
+   "seconds": 2247.9,
+   "finished_utc": "2026-08-23T23:40:31.847103+00:00"
+  },
+  "8LSDKF8A": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:03:03.924898+00:00",
+   "seconds": 1973.3,
+   "finished_utc": "2026-08-23T23:35:57.274100+00:00"
+  },
+  "AQPKMIGX": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:03:03.927339+00:00",
+   "seconds": 1379.3,
+   "finished_utc": "2026-08-23T23:26:03.241086+00:00"
+  },
+  "USUVR386": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:09:32.009851+00:00",
+   "seconds": 1886.2,
+   "finished_utc": "2026-08-23T23:40:58.184181+00:00"
+  },
+  "XAD76IGP": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:26:03.244083+00:00",
+   "seconds": 2552.8,
+   "finished_utc": "2026-08-24T00:08:36.003730+00:00"
+  },
+  "E23L3VHP": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:35:57.282101+00:00",
+   "seconds": 893.6,
+   "finished_utc": "2026-08-23T23:50:50.891907+00:00"
+  },
+  "FXB2NCHM": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:40:31.850236+00:00",
+   "seconds": 2158.0,
+   "finished_utc": "2026-08-24T00:16:29.885754+00:00"
+  },
+  "UUTBWC67": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:40:58.187173+00:00",
+   "seconds": 1114.2,
+   "finished_utc": "2026-08-23T23:59:32.434270+00:00"
+  },
+  "J37889TF": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:50:50.893907+00:00",
+   "seconds": 964.8,
+   "finished_utc": "2026-08-24T00:06:55.737535+00:00"
+  },
+  "VZCYMTY5": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-23T23:59:32.437273+00:00",
+   "seconds": 1901.5,
+   "finished_utc": "2026-08-24T00:31:13.945337+00:00"
+  },
+  "XM7ZLXBT": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-24T00:06:55.740060+00:00",
+   "seconds": 2055.0,
+   "finished_utc": "2026-08-24T00:41:10.735834+00:00"
+  },
+  "UHKIUAAB": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-24T00:08:36.005731+00:00",
+   "seconds": 1950.0,
+   "finished_utc": "2026-08-24T00:41:06.054322+00:00"
+  },
+  "JS7DDANC": {
+   "status": "done",
+   "attempts": 1,
+   "error": null,
+   "started_utc": "2026-08-24T00:16:29.888754+00:00",
+   "seconds": 861.4,
+   "finished_utc": "2026-08-24T00:30:51.244252+00:00"
+  },
+  "FYD6PEBJ": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment LiteLLM Retried: 4 times",
+   "started_utc": "2026-08-24T00:50:48.723745+00:00",
+   "finished_utc": "2026-08-24T00:53:01.519081+00:00"
+  },
+  "2DIGX7WK": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment LiteLLM Retried: 4 times",
+   "started_utc": "2026-08-24T00:50:48.725745+00:00",
+   "finished_utc": "2026-08-24T00:53:00.709649+00:00"
+  },
+  "SKP4YTPQ": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment LiteLLM Retried: 4 times",
+   "started_utc": "2026-08-24T00:50:48.727745+00:00",
+   "finished_utc": "2026-08-24T00:53:00.912098+00:00"
+  },
+  "AMYIMZZN": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment LiteLLM Retried: 4 times",
+   "started_utc": "2026-08-24T00:51:36.908395+00:00",
+   "finished_utc": "2026-08-24T00:53:00.915928+00:00"
+  },
+  "LXWBZ3WM": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:00.712646+00:00",
+   "finished_utc": "2026-08-24T00:53:01.516070+00:00"
+  },
+  "DBBMXVEY": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:00.918445+00:00",
+   "finished_utc": "2026-08-24T00:53:01.899693+00:00"
+  },
+  "UNEWQELR": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:00.921444+00:00",
+   "finished_utc": "2026-08-24T00:53:03.282731+00:00"
+  },
+  "XZFSJRYD": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:01.522081+00:00",
+   "finished_utc": "2026-08-24T00:53:02.086973+00:00"
+  },
+  "BMPCDAQJ": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:01.523080+00:00",
+   "finished_utc": "2026-08-24T00:53:02.089984+00:00"
+  },
+  "VBBQJZAB": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:01.903336+00:00",
+   "finished_utc": "2026-08-24T00:53:02.865351+00:00"
+  },
+  "V4AUKFVF": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:02.092981+00:00",
+   "finished_utc": "2026-08-24T00:53:03.285732+00:00"
+  },
+  "6QFXQUNA": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:02.094984+00:00",
+   "finished_utc": "2026-08-24T00:53:03.280719+00:00"
+  },
+  "DCFNEKN4": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:02.868365+00:00",
+   "finished_utc": "2026-08-24T00:53:07.009517+00:00"
+  },
+  "VBUBG9BU": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:03.287733+00:00",
+   "finished_utc": "2026-08-24T00:53:07.230181+00:00"
+  },
+  "G89R825J": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:03.289730+00:00",
+   "finished_utc": "2026-08-24T00:53:07.224171+00:00"
+  },
+  "MJUWZITR": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:03.292730+00:00",
+   "finished_utc": "2026-08-24T00:53:07.227179+00:00"
+  },
+  "HXKRUPYI": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:07.011528+00:00",
+   "finished_utc": "2026-08-24T00:53:08.153313+00:00"
+  },
+  "KGJ828E4": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:07.232180+00:00",
+   "finished_utc": "2026-08-24T00:53:08.466228+00:00"
+  },
+  "GMW4LBQU": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:07.234552+00:00",
+   "finished_utc": "2026-08-24T00:53:08.460909+00:00"
+  },
+  "P6XQPYEA": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:07.237562+00:00",
+   "finished_utc": "2026-08-24T00:53:08.463927+00:00"
+  },
+  "V8NWC7ZT": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:08.156327+00:00",
+   "finished_utc": "2026-08-24T00:53:09.696963+00:00"
+  },
+  "REGHBDBJ": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:08.469230+00:00",
+   "finished_utc": "2026-08-24T00:53:10.236399+00:00"
+  },
+  "BFENLUNZ": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:08.471229+00:00",
+   "finished_utc": "2026-08-24T00:53:10.233653+00:00"
+  },
+  "DJVBG23F": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:08.474231+00:00",
+   "finished_utc": "2026-08-24T00:53:10.231643+00:00"
+  },
+  "BKQ7F9KB": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:09.699525+00:00",
+   "finished_utc": "2026-08-24T00:53:10.483047+00:00"
+  },
+  "MZ96YDPY": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "cryptography>=3.1 is required for AES algorithm",
+   "started_utc": "2026-08-24T00:53:10.238413+00:00",
+   "finished_utc": "2026-08-24T00:53:10.453053+00:00"
+  },
+  "55BE86U9": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "cryptography>=3.1 is required for AES algorithm",
+   "started_utc": "2026-08-24T00:53:10.241411+00:00",
+   "finished_utc": "2026-08-24T00:53:10.456067+00:00"
+  },
+  "8NQCIM4T": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "cryptography>=3.1 is required for AES algorithm",
+   "started_utc": "2026-08-24T00:53:10.243668+00:00",
+   "finished_utc": "2026-08-24T00:53:10.458573+00:00"
+  },
+  "YMBIMQR9": {
+   "status": "failed",
+   "attempts": 3,
+   "error": "litellm.BadRequestError: DashscopeException - Access denied, please make sure your account is in good standing. For details, see: https://help.aliyun.com/zh/model-studio/error-code#overdue-payment",
+   "started_utc": "2026-08-24T00:53:10.461183+00:00",
+   "finished_utc": "2026-08-24T00:53:10.787656+00:00"
+  }
+ },
+ "updated_utc": "2026-08-24T00:53:10.787656+00:00"
+}
