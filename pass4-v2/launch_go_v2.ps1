@@ -22,7 +22,11 @@ if (-not $key) { throw "opencode-go key not found in auth.json" }
 
 $env:OPENAI_API_KEY = $key
 $env:OPENAI_API_BASE = "https://opencode.ai/zen/go/v1"
-if (-not $env:DASHSCOPE_API_KEY) { throw "DASHSCOPE_API_KEY not present in environment" }
+# DeepSeek 兜底：研究者将 API key 存于环境变量 'paperqa'，此处映射为 litellm 标准 var
+$pk = $env:paperqa
+if (-not $pk) { $pk = [Environment]::GetEnvironmentVariable("paperqa","User") }
+if (-not $pk) { throw "neither DEEPSEEK_API_KEY nor 'paperqa' env var found for deepseek fallback" }
+$env:DEEPSEEK_API_KEY = $pk
 
 if ($Batch) {
     $argList = @("batch.py", "--concurrency", "$Concurrency", "--max-hours", "$MaxHours")
