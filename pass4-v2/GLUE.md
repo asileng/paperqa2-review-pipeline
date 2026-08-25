@@ -132,3 +132,48 @@ manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（�
    - 上述两处提示词改动使 `prompts_sha256` 全变 → 已完成的 14 篇若续跑会被 `ResumeBook`
      判为配置不匹配而**重跑**；未跑的 27+3 篇正好用新提示词，无影响；14 篇旧产物保持
      不动（不重跑即不碰）。此为预期代价，研究者已知情。
+
+## 九、跨 provider 模型路由（2026-08-26，研究者六问裁定）
+
+### 实证前提（推翻初始设想）
+
+- Go 套餐 5 小时限额是 **workspace 账号级共享桶**：六个模型家族返回同一递减 retry-after；
+  litellm 异常消息明示 "5-hour usage limit reached. Resets in Xhr Ymin"，headers 为空。
+  → "限额时换模型绕行"不成立；路由目标改为**省桶 + 跨 provider 故障转移**。
+- Go 网关提供付费溢出选项（enable usage from balance），是否开通由研究者决定。
+
+### 架构（model_router.py）
+
+```
+角色链：retrieve [go/deepseek-v4-flash → dashscope/qwen-turbo]
+        extract  [go/qwen3.7-plus   → dashscope/qwen3.7-plus-2026-05-26]
+        vision   [go/deepseek-v4-flash-vision-exp → dashscope/qwen-vl-plus]
+论文 = 原子分配单位：整篇单 provider 三角色同源，中途绝不切换。
+```
+
+### 研究者裁定记录
+
+| 决策点 | 裁定 |
+|---|---|
+| 绑定粒度 | 固定配对（retrieve 弱/extract 强，论文内各自不变） |
+| 中断处置 | 同模型断点续跑（指纹三元组不变→已完成 pass 复用）；换源才需整篇重跑 |
+| 切换信号 | 仅 quota(429/usage limit)与 provider-fatal(denied/欠费/认证) 触发；transient 走既有重试 |
+| fatal 语义 | 单 provider 故障→该 provider 冷却 6h 继续批次；**不**全批停摆 |
+| VLM | 纳入第三链同样路由 |
+| 生效范围 | runner(--provider 强制/auto) 与 batch(probe 预热+cooldown+--wait-reset) 双入口 |
+
+### 实现要点
+
+- meta.json 指纹改三元组 (retrieve_model, extract_model, vlm)；旧单值 meta 视为 fresh。
+- preflight 逐链 ping 并**预热冷却状态**（从真实异常解析 "Resets in Xhr Ymin"，
+  解析不到时兜底 1800s）；存在三角色全健康的 provider 才 exit 0。
+- batch 启动默认 probe；worker 捕 QuotaExhausted/AllProvidersDown → status=cooldown
+  （记 provider+reset_epoch）；--wait-reset 使进程休眠至最早重置点继续清队列。
+- record.json 新增 models{provider,retrieve,extract,vision}+provenance.router_snapshot；
+  Zotero 索引注记追加 retrieve_llm 行（INDEX_FIELDS 不变，旧笔记兼容）。
+- gen() num_retries 4→2（429 在账号桶下无意义重试，快速上抛转冷却）。
+
+### 已知限制（研究者待办）
+
+- DashScope 当前 "Access denied / not in good standing"（三模型全拦）→ 充值后仍被拒，
+  需研究者核查阿里云账户状态（结算/实名）；未解决前故障转移链为死路，批次将纯 Go 运行。

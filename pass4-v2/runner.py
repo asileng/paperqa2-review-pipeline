@@ -39,6 +39,13 @@ import paperqa
 from paperqa import Docs, Settings
 
 import zotero_index as zi
+from model_router import (
+    ModelRouter,
+    QuotaExhausted,
+    AllProvidersDown,
+    classify_llm_error,
+    load_router_config,
+)
 
 BASE = Path(__file__).resolve().parent
 PROMPTS = BASE / "prompts"
@@ -53,7 +60,7 @@ ALL_PROMPTS = (
     ["00_global_rules", "r1a", "r1b", "e1", "r2a", "r2b", "e2",
      "r3a", "r3b", "e3", "gate", "r4a", "r4b", "e4", "backfill_r", "backfill_e"]
 )
-_META_MATCH_FIELDS = ("model", "vlm", "embed", "paperqa_version")
+_META_MATCH_FIELDS = ("retrieve_model", "extract_model", "vlm", "embed", "paperqa_version")
 
 T_INDEX = float(os.environ.get("P4_T_INDEX", "2700"))
 T_RETRIEVE = float(os.environ.get("P4_T_RETRIEVE", "900"))
@@ -153,14 +160,14 @@ def log(key: str, msg: str) -> None:
 
 # ---------- LLM 生成与证据检索 ----------
 
-async def gen(prompt_text: str) -> tuple[str, dict, float]:
+async def gen(prompt_text: str, model: str) -> tuple[str, dict, float]:
     t = time.time()
     resp = await asyncio.wait_for(
         litellm.acompletion(
-            model=MODEL,
+            model=model,
             messages=[{"role": "user", "content": prompt_text}],
             temperature=0.0,
-            num_retries=4,
+            num_retries=2,
             timeout=420,
         ),
         timeout=T_GENERATE,
@@ -226,10 +233,11 @@ def pool_header(ctxs: list) -> str:
 
 # ---------- 产物级 resume ----------
 
-def current_meta(fingerprints: dict) -> dict:
+def current_meta(fingerprints: dict, models: dict) -> dict:
     return {
-        "model": MODEL,
-        "vlm": VLM,
+        "retrieve_model": models["retrieve"],
+        "extract_model": models["extract"],
+        "vlm": models["vision"],
         "embed": EMBED,
         "paperqa_version": paperqa.__version__,
         "prompts_sha256": dict(fingerprints),
@@ -387,8 +395,60 @@ def resolve_references(docs, e1_text: str = "") -> str:
 
 # ---------- 主流程 ----------
 
+_KINDS = ("retrieve", "extract", "vision")
+
+
+def _assign_provider(key: str, out_dir: Path, router: ModelRouter,
+                     force_provider: str | None = None) -> tuple[str, dict]:
+    """论文级 provider 分配（原子单位）。优先级：历史三元组钉定 > force > 自动。
+
+    - 若 results/<key>/meta.json 已有完整三元组 → 钉死原 provider（同模型断点续跑）；
+      原 provider 仍在冷却 → 抛 QuotaExhausted（batch 记 cooldown，不换源重跑）
+    - 全新论文 → router.pick_provider() 取第一个健康 provider
+    """
+    prior = load_meta(out_dir)
+    triple = {k: prior.get(f"{k}_model") if k != "vision" else prior.get("vlm") for k in _KINDS}
+    if all(triple.values()):
+        prov = router.provider_for(triple)
+        if prov is not None:
+            rem = router.cooldown_remaining(prov)
+            if rem > 0:
+                raise QuotaExhausted(prov, time.time() + rem)
+            models = {"provider": prov, **{k: router.model_for(k, prov) for k in _KINDS}}
+            log(key, f"pinned to prior provider '{prov}' for same-model resume")
+            return prov, models
+        log(key, "prior meta triple unknown to current chains; treating as fresh assignment")
+    prov = router.pick_provider(force=force_provider)
+    models = {"provider": prov, **{k: router.model_for(k, prov) for k in _KINDS}}
+    log(key, f"assigned provider='{prov}' retrieve={models['retrieve']} "
+             f"extract={models['extract']} vision={models['vision']}")
+    return prov, models
+
+
 async def run_one(entry: dict, resume: bool = True, archive: bool = True,
-                  update_index: bool = False) -> dict:
+                  update_index: bool = False,
+                  router: ModelRouter | None = None,
+                  force_provider: str | None = None) -> dict:
+    router = router or ModelRouter(*load_router_config())
+    key = entry["zotero_key"]
+    out_dir = RESULTS / key
+    provider, models = _assign_provider(key, out_dir, router, force_provider)
+    try:
+        return await _run_one_inner(entry, resume=resume, archive=archive,
+                                    update_index=update_index, models=models, router=router)
+    except QuotaExhausted:
+        log(key, f"QUOTA deferred on '{provider}'; partial artifacts preserved for same-provider resume")
+        raise
+    except Exception as exc:
+        kind = router.note_error(exc, provider)  # auth→原样上抛；quota→转 QuotaExhausted
+        log(key, f"FAILED ({kind}): {exc}")
+        raise
+
+
+async def _run_one_inner(entry: dict, *, resume: bool, archive: bool,
+                         update_index: bool, models: dict, router: ModelRouter) -> dict:
+    provider = models["provider"]
+    r_model, x_model, v_model = models["retrieve"], models["extract"], models["vision"]
     key = entry["zotero_key"]
     pdf = Path(entry["pdf_path"])
     if not pdf.exists():
@@ -408,7 +468,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
 
     started = datetime.now(timezone.utc).isoformat()
     fingerprints = prompt_fingerprints()
-    book = ResumeBook(out_dir, current_meta(fingerprints), resume)
+    book = ResumeBook(out_dir, current_meta(fingerprints, models), resume)
     pdf_hash = sha256_of(pdf)
     timings: dict = {}
     usage_acc: dict = {}
@@ -417,14 +477,14 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
     def acc_usage(stage: str, u: dict) -> None:
         usage_acc[stage] = u
 
-    settings = build_settings()
+    settings = build_settings(r_model, v_model)
 
     # ---- 索引（pickle 检查点，仅加载本目录自产文件） ----
     docs = None
     ckpt_cfg = {
         "paperqa_version": paperqa.__version__,
         "pdf_sha256": pdf_hash,
-        "vlm": VLM,
+        "vlm": v_model,
         "embed": EMBED,
     }
     docs_pkl = out_dir / "docs.pkl"
@@ -500,7 +560,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
                 "\n\n=== REFERENCE: PASS 1 EXTRACTION OUTPUT (Research Questions live here; "
                 "do not re-derive them) ===\n\n" + ref
             )
-        text, usg, gsec = await gen(user_msg)
+        text, usg, gsec = await gen(user_msg, x_model)
         ans_path.write_text(text, encoding="utf-8")
         acc_usage(pname, usg)
         timings[f"{pname}_seconds"] = gsec
@@ -544,7 +604,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             for pname in ("pass1", "pass2", "pass3")
         )
         gate_prompt = f"{GLOBAL}\n\n=== ACCUMULATED EVIDENCE (POOLS 1-3) ===\n\n{pools_digest}\n\n=== TASK ===\n\n{load_prompt('gate')}"
-        raw_gate, usg, gs = await gen(gate_prompt)
+        raw_gate, usg, gs = await gen(gate_prompt, x_model)
         acc_usage("gate", usg)
         choice = parse_gate_choice(raw_gate)
         probe_used = False
@@ -556,7 +616,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             pools_dir.mkdir(parents=True, exist_ok=True)
             probe_pool_path.write_text(probe_md, encoding="utf-8")
             gate_prompt2 = gate_prompt + f"\n\n=== ADDITIONAL PROBE EVIDENCE (lightweight retrieval) ===\n\n{probe_md}"
-            raw_gate, usg2, gs2 = await gen(gate_prompt2)
+            raw_gate, usg2, gs2 = await gen(gate_prompt2, x_model)
             acc_usage("gate_probe", usg2)
             gs += gs2
             choice = parse_gate_choice(raw_gate) or "A"
@@ -602,8 +662,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
             pool4m.write_text(pool_md, encoding="utf-8")
             text, usg, gsec = await gen(
                 f"{GLOBAL}\n\n=== RETRIEVED EVIDENCE (PASS 4 POOL) ===\n\n{pool_md}\n\n"
-                f"=== EXTRACTION TASK ===\n\n{load_prompt('e4')}"
-            )
+                f"=== EXTRACTION TASK ===\n\n{load_prompt('e4')}", x_model)
             ans4.write_text(text, encoding="utf-8")
             acc_usage("pass4", usg)
             timings["pass4_seconds"] = gsec
@@ -636,7 +695,8 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         bf_pool.write_text(pool_md, encoding="utf-8")
         text, usg, gsec = await gen(
             f"{GLOBAL}\n\n=== RETRIEVED EVIDENCE (CONCEPT: {concept}) ===\n\n{pool_md}\n\n"
-            f"=== EXTRACTION TASK ===\n\n{load_prompt('backfill_e').replace('{concept}', concept)}"
+            f"=== EXTRACTION TASK ===\n\n{load_prompt('backfill_e').replace('{concept}', concept)}",
+            x_model,
         )
         bf_ans.write_text(text, encoding="utf-8")
         acc_usage(f"backfill_{i}", usg)
@@ -658,8 +718,10 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         "---\n"
         "provider: paperqa2_docs_local\n"
         f"pipeline: pass4-v2\n"
-        f"llm: {MODEL}\n"
-        f"vision_llm: {VLM}\n"
+        f"llm: {x_model}\n"
+        f"retrieve_llm: {r_model}\n"
+        f"vision_llm: {v_model}\n"
+        f"routing_provider: {provider}\n"
         f"embedding: {EMBED}\n"
         f"zotero_item_key: {key}\n"
         f"sections_zotero: {', '.join(entry.get('sections', []))}\n"
@@ -717,7 +779,9 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         },
         "provider": "paperqa2_docs_local",
         "pipeline": "pass4-v2",
-        "llm": MODEL,
+        "llm": x_model,
+        "retrieve_llm": r_model,
+        "models": dict(models),
         "embedding_model": EMBED,
         "citation_scheme": scheme,
         "citation_audit": {**audit, "derived_scheme": scheme},
@@ -732,6 +796,8 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
         "relations": [],
         "provenance": {
             "record_md_path": str(record_md),
+            "routing_provider": provider,
+            "router_snapshot": router.snapshot(),
             "prompts_sha256": {
                 n: {"sha256": fingerprints[n], "path": str(PROMPTS / f"{n}.md")} for n in ALL_PROMPTS
             },
@@ -748,65 +814,94 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
     return {"status": "done", "key": key, "record": str(record_md)}
 
 
-_SETTINGS = None
+_SETTINGS_CACHE: dict = {}
 
 
-def build_settings() -> Settings:
-    global _SETTINGS
-    if _SETTINGS is None:
-        s = Settings(llm=MODEL, summary_llm=MODEL, embedding=EMBED, temperature=0.0)
-        s.parsing.enrichment_llm = VLM
-        _SETTINGS = s
-    return _SETTINGS
+def build_settings(retrieve_model: str, vision_model: str) -> Settings:
+    """paperqa 内部调用（aget_evidence 摘要 / aadd 图像增强）按角色取模型；
+    openai/* 走全局 OPENAI_API_BASE(Go 网关)，dashscope/* 走 DASHSCOPE_API_KEY。"""
+    key = (retrieve_model, vision_model)
+    if key not in _SETTINGS_CACHE:
+        s = Settings(llm=retrieve_model, summary_llm=retrieve_model, embedding=EMBED, temperature=0.0)
+        s.parsing.enrichment_llm = vision_model
+        _SETTINGS_CACHE[key] = s
+    return _SETTINGS_CACHE[key]
 
 
-# ---------- preflight（五项，沿袭 pilot-v2） ----------
+# ---------- preflight（逐链探活 + 路由冷却预热） ----------
 
 def classify_probe_error(exc: Exception) -> str:
-    msg = str(exc)
-    low = msg.lower()
-    if "402" in msg or "insufficient" in low or "balance" in low:
-        return f"余额不足 ({msg[:160]})"
-    if "401" in msg or "auth" in low:
-        return f"key 无效 ({msg[:160]})"
-    return msg[:200]
+    kind, reset = classify_llm_error(exc)
+    if kind == "quota":
+        mins = int((reset - time.time()) / 60) if reset else 0
+        return f"限额冷却 ~{mins}min"
+    if kind == "auth":
+        return f"认证失败 ({str(exc)[:120]})"
+    if kind == "transient":
+        return f"瞬态 ({str(exc)[:120]})"
+    return str(exc)[:160]
 
 
-async def preflight() -> int:
-    failures = 0
+async def _probe_one(model: str) -> tuple[bool, str, str, float | None]:
+    try:
+        await asyncio.wait_for(
+            litellm.acompletion(model=model, messages=[{"role": "user", "content": "ping"}],
+                                max_tokens=8, num_retries=0, timeout=90),
+            timeout=100,
+        )
+        return True, "OK", "ok", None
+    except Exception as exc:
+        kind, reset = classify_llm_error(exc)
+        return False, classify_probe_error(exc), kind, reset
 
-    def report(idx, name, ok, detail=""):
-        nonlocal failures
-        failures += 0 if ok else 1
-        suffix = f" — {detail}" if detail else ""
-        print(f"[preflight {idx}/5] {name}: {'PASS' if ok else 'FAIL'}{suffix}", flush=True)
 
-    report(1, "env-strip", True, "colliding vars stripped at import")
+async def preflight(router: ModelRouter | None = None) -> int:
+    """对三条角色链的每个唯一条目做轻量 ping；quota 信号直接预热 router 冷却。
+
+    判定：存在某 provider 使其 retrieve/extract/vision 三条全部 OK → PASS。
+    """
+    router = router or ModelRouter(*load_router_config())
+    print("[preflight] env-strip: colliding vars stripped at import", flush=True)
     try:
         import PIL
-        report(2, "pil-import", True, f"PIL {getattr(PIL, '__version__', 'unknown')}")
+        print(f"[preflight] pil-import: PASS (PIL {getattr(PIL, '__version__', 'unknown')})", flush=True)
     except Exception as exc:
-        report(2, "pil-import", False, str(exc)[:200])
+        print(f"[preflight] pil-import: FAIL {str(exc)[:120]}", flush=True)
     try:
-        await litellm.acompletion(model=MODEL, messages=[{"role": "user", "content": "ping"}], max_tokens=10)
-        report(3, "llm-probe", True, MODEL)
+        from sentence_transformers import SentenceTransformer  # noqa: F401
+        print("[preflight] embedding-import: PASS", flush=True)
     except Exception as exc:
-        report(3, "llm-probe", False, classify_probe_error(exc))
-    try:
-        await litellm.acompletion(model=VLM, messages=[{"role": "user", "content": "ping"}], max_tokens=10)
-        report(4, "vlm-probe", True, VLM)
-    except Exception as exc:
-        report(4, "vlm-probe", False, classify_probe_error(exc))
-    try:
-        from sentence_transformers import SentenceTransformer
-        st = SentenceTransformer(EMBED.removeprefix("hybrid-st-"))
-        vec = st.encode(["pass4 preflight"])
-        report(5, "embedding-probe", True, f"dim={len(vec[0])}")
-    except Exception as exc:
-        report(5, "embedding-probe", False, str(exc)[:200])
+        print(f"[preflight] embedding-import: FAIL {str(exc)[:120]}", flush=True)
 
-    print(f"[preflight] {'ALL PASS' if failures == 0 else str(failures) + ' FAILED'}", flush=True)
-    return 0 if failures == 0 else 1
+    ok_by_provider: dict[str, set] = {}
+    seen: set = set()
+    for kind in ("retrieve", "extract", "vision"):
+        for entry in router.chains[kind]:
+            tag = (entry["provider"], entry["model"])
+            if tag in seen:
+                continue
+            seen.add(tag)
+            alive, detail, ekind, ereset = await _probe_one(entry["model"])
+            status = "OK " if alive else "DOWN"
+            print(f"[preflight] {status} [{entry['provider']}/{kind}] {entry['model']} — {detail}", flush=True)
+            if alive:
+                ok_by_provider.setdefault(entry["provider"], set()).add(kind)
+            elif ekind == "quota" and ereset:
+                router.mark_quota(entry["provider"], ereset)
+                print(f"[preflight]   -> cooldown primed for '{entry['provider']}' "
+                      f"until {time.strftime('%H:%M:%S', time.localtime(ereset))}", flush=True)
+
+    healthy = [p for p in router.order if ok_by_provider.get(p, set()) >= {"retrieve", "extract", "vision"}]
+    if healthy:
+        print(f"[preflight] RECOMMENDED provider(s): {healthy}", flush=True)
+        print("[preflight] ALL CHAINS PROBED — PASS", flush=True)
+        return 0
+    print("[preflight] NO fully-healthy provider across all three roles", flush=True)
+    cds = router.cooldowns()
+    if cds:
+        for p, t in sorted(cds.items()):
+            print(f"[preflight] cooldown {p}: resets {time.strftime('%H:%M:%S', time.localtime(t))}", flush=True)
+    return 1
 
 
 def main() -> int:
@@ -820,6 +915,8 @@ def main() -> int:
                         help="after a successful run, write/update the pass4-v2 Zotero index note")
     parser.add_argument("--zotero-index-only", action="store_true",
                         help="skip analysis; validate existing results/ and write the Zotero index note")
+    parser.add_argument("--provider", default="auto", choices=["auto", "go", "dashscope"],
+                        help="force provider for this run (default: auto with cooldown fallback)")
     args = parser.parse_args(sys.argv[1:])
     if args.preflight:
         sys.exit(asyncio.run(preflight()))
@@ -832,12 +929,15 @@ def main() -> int:
     missing = [k for k in args.keys if k not in by_key]
     if missing:
         raise SystemExit(f"keys not in queue: {missing}")
+    router = ModelRouter(*load_router_config())
+    force = None if args.provider == "auto" else args.provider
     results = []
     for k in args.keys:
         try:
             r = asyncio.run(run_one(by_key[k], resume=not args.no_resume,
                                     archive=not args.no_archive,
-                                    update_index=args.update_zotero_index))
+                                    update_index=args.update_zotero_index,
+                                    router=router, force_provider=force))
             results.append(r)
         except Exception as exc:
             import traceback
