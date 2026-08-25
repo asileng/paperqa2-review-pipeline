@@ -114,13 +114,17 @@ manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（�
 2. **prior work 无法查询（问题 1）**
    - 根因：`e1.md` "Relevant prior research" 四字段缺"被引文献身份标识"，模型可泛述
      "先前研究表明 X" 而不点名，记录后无从回查。
-   - 修复：
-     - `e1.md` 每项新增首个必填字段 **Cited reference**：要求原样摘录文中夹注身份
-       （作者-年份），**明确禁止模型猜测题名**——题名由脚本确定性解析。
-     - 新增 `resolve_references(docs, e1_text)`（runner.py，无 LLM）：从 PASS 1 文本抽取
-       (姓氏,年份) 夹注标识 → 从本文 `docs.texts` 确定性抽取参考文献表 → 按
-       (姓氏归一,年份) 映射 → 产出 `e1.references.md`（含题名的条目表）+ 写入
-       `structured_record.md` 末节 + record.json `resolved_references_md_path`。
+   - 修复（经研究者二次澄清，走最简最稳路径）：
+     - **直接确定性抽取本文末尾参考文献表的全部 APA 整条**——不依赖 e1 夹注、不做
+       脆弱的"夹注→书目"匹配。研究者原话："直接从文章最后的参考文献查整条的 APA"。
+     - `runner.py` 新增 `resolve_references(docs)`（无 LLM）：从 `docs.texts` 定位
+       References 区 → 按 `[N]`/`N.`/`N)` 切分条目 → `_clean_bib_entry` 修复 PDF 抽取
+       导致的连字符换行断词（Brid- gette→Bridgette）与多余空白 → 产出 `e1.references.md`
+       （全部 APA 条目表，含题名）+ 写入 `structured_record.md` 末节
+       "REFERENCES — FULL APA (deterministic extraction)" + record.json
+       `resolved_references_md_path`。
+     - `e1.md` 仍保留 **Cited reference** 字段（要求原样摘录文中夹注身份），作为 e1 自身
+       的可读性增强；但**可查询性的真正来源是上面的整条 APA 书目**，二者互补不冲突。
      - 研究者明确：title 一定 given、references 表检索要做、这部分"甚至可以用固定脚本做"
        ——故走确定性脚本而非 LLM，零幻觉风险。
 

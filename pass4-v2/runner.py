@@ -329,40 +329,8 @@ def slugify(s: str) -> str:
 
 # ---------- 确定性引用解析（GLUE v2-dev，无 LLM） ----------
 
-_INTEXT_PAREN_RE = re.compile(r"\(([^()]{3,80}?)\s(\d{4}[a-z]?)\)")
-_INTEXT_NARR_RE = re.compile(
-    r"\b([A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+(?:-[A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+)*)"
-    r"\s+et al\.?\s*\((\d{4}[a-z]?)\)"
-)
-# 姓氏（含连字符，如 Abd-Alrazaq / Smith-Jones）
-_SURNAME_RE = re.compile(
-    r"[A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+(?:-[A-Z][a-zàáâäéèêëíìîïóòôöúùûüñç]+)*"
-)
 _YEAR_RE = re.compile(r"(\d{4}[a-z]?)")
 _BIB_HEAD_RE = re.compile(r"(?im)^\s*(references|bibliography|参考文献|引用文献)\s*$")
-
-
-def _norm_surname(s: str) -> str:
-    return re.sub(r"[^a-zàáâäéèêëíìîïóòôöúùûüñç]", "", s.lower())
-
-
-def _extract_inttext_citations(text: str) -> list[tuple[str, str]]:
-    """从 PASS 1 文本抽取 (姓氏, 年份) 夹注标识，去重保序。"""
-    found = []
-    for m in _INTEXT_PAREN_RE.finditer(text):
-        lead = m.group(1).strip()
-        surnames = _SURNAME_RE.findall(lead)
-        if surnames:
-            found.append((surnames[0], m.group(2)))
-    for m in _INTEXT_NARR_RE.finditer(text):
-        found.append((m.group(1), m.group(2)))
-    seen, out = set(), []
-    for sur, year in found:
-        k = (_norm_surname(sur), year)
-        if k not in seen:
-            seen.add(k)
-            out.append((sur, year))
-    return out
 
 
 def _collect_doc_text(docs) -> str:
@@ -378,10 +346,19 @@ def _collect_doc_text(docs) -> str:
 
 
 _BIB_MARKER_RE = re.compile(r"^\s*\[?\d+\]?\.?\s*")
-_AUTHOR_SPLIT_RE = re.compile(r",\s*and\s+|,\s*|\s+and\s+|\s*&\s*")
+_HYPHEN_BREAK_RE = re.compile(r"-\s+([a-zàáâäéèêëíìîïóòôöúùûüñç])")
+
+
+def _clean_bib_entry(raw: str) -> str:
+    """修复 PDF 抽取导致的连字符换行断词与多余空白。"""
+    e = _BIB_MARKER_RE.sub("", raw)
+    e = _HYPHEN_BREAK_RE.sub(r"\1", e)  # Brid- gette -> Bridgette
+    e = re.sub(r"\s+", " ", e).strip()
+    return e
 
 
 def _extract_bib_entries(full: str) -> list[str]:
+    """从本文参考文献表确定性抽取全部 APA 条目（含题名）。无 LLM。"""
     m = _BIB_HEAD_RE.search(full)
     bib = full[m.end():] if m else full
     raw = re.split(r"\n\s*(?=\[\d+\]|\d{1,3}\s*[\.\)]\s)", bib)
@@ -389,54 +366,22 @@ def _extract_bib_entries(full: str) -> list[str]:
     for e in raw:
         e = e.strip()
         if len(e) >= 25 and _YEAR_RE.search(e):
-            entries.append(_BIB_MARKER_RE.sub("", e))
+            entries.append(_clean_bib_entry(e))
     return entries
 
 
-def _bib_surnames(entry: str) -> list[str]:
-    """抽取条目作者部分（年份之前）各作者的姓氏（每段末词）。"""
-    ym = _YEAR_RE.search(entry)
-    if not ym:
-        return []
-    author_part = entry[:ym.start()].strip().rstrip(". ")
-    out = []
-    for chunk in _AUTHOR_SPLIT_RE.split(author_part):
-        chunk = chunk.strip().rstrip(".")
-        if not chunk:
-            continue
-        toks = chunk.split()
-        if toks:
-            out.append(toks[-1])
-    return out
+def resolve_references(docs, e1_text: str = "") -> str:
+    """确定性抽取本文参考文献表全部 APA 条目（含题名），无 LLM。
 
-
-def resolve_references(docs, e1_text: str) -> str:
-    """确定性解析：把 PASS 1 的夹注标识映射到本文参考文献表条目（含题名）。无 LLM。"""
-    cites = _extract_inttext_citations(e1_text)
+    直接从文章末尾的参考文献区抽取整条 APA，作为可查询的 prior-work 索引。
+    """
     full = _collect_doc_text(docs)
     entries = _extract_bib_entries(full)
-    index = {}
-    for e in entries:
-        ym = _YEAR_RE.search(e)
-        if not ym:
-            continue
-        year = ym.group(1)
-        for sur in _bib_surnames(e):
-            index.setdefault((_norm_surname(sur), year), []).append(e)
-    if not cites:
-        return "_未从 PASS 1 提取到可解析的夹注标识。_\n"
-    lines = ["| 夹注标识 | 解析到的参考文献条目（含题名） |", "|---|---|"]
-    for sur, year in cites:
-        matched = index.get((_norm_surname(sur), year))
-        if matched:
-            entry_md = matched[0].replace("\n", " ").strip()
-            if len(entry_md) > 600:
-                entry_md = entry_md[:600] + "…"
-            lines.append(f"| ({sur}, {year}) | {entry_md} |")
-        else:
-            lines.append(
-                f"| ({sur}, {year}) | — 未在本文参考文献表中解析到（可能为夹注变体或引用自次级来源） |"
-            )
+    if not entries:
+        return "_未从本文参考文献表解析到条目。_\n"
+    lines = ["| # | APA 条目（含题名） |", "|---|---|"]
+    for i, e in enumerate(entries, 1):
+        lines.append(f"| {i} | {e} |")
     return "\n".join(lines) + "\n"
 
 
@@ -572,10 +517,10 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
     if e1_ans_path.exists() and not ref_md_path.exists():
         try:
             e1_text = e1_ans_path.read_text(encoding="utf-8")
-            ref_md = resolve_references(docs, e1_text)
+            ref_md = resolve_references(docs)
             ref_md_path.write_text(
-                "# Resolved Cited References (deterministic, script-generated)\n\n"
-                "> 由固定脚本从本文参考文献表确定性解析，未调用 LLM。\n\n" + ref_md,
+                "# References — Full APA (deterministic extraction)\n\n"
+                "> 由固定脚本直接从本文末尾参考文献区确定性抽取整条 APA，未调用 LLM。\n\n" + ref_md,
                 encoding="utf-8",
             )
             log(key, "e1.references.md generated (deterministic)")
@@ -743,7 +688,7 @@ async def run_one(entry: dict, resume: bool = True, archive: bool = True,
     ref_md_path = out_dir / "e1.references.md"
     if ref_md_path.exists():
         _ref_txt = ref_md_path.read_text(encoding="utf-8").strip()
-        body_parts.append(f"\n---\n\n# RESOLVED CITED REFERENCES (deterministic)\n\n{_ref_txt}\n")
+        body_parts.append(f"\n---\n\n# REFERENCES — FULL APA (deterministic extraction)\n\n{_ref_txt}\n")
         audit_texts.append(_ref_txt)
     body = "".join(body_parts)
     audit = audit_citations(body)
