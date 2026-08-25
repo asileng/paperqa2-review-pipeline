@@ -54,23 +54,38 @@ check("timeout -> transient", k == "transient")
 k, r = classify_llm_error(FakeErr("Error code: 402 - insufficient balance", 402))
 check("402 balance -> quota(兜底1800s)", k == "quota" and 1750 <= r - time.time() <= 1850)
 
-# --- 状态机 ---
-rt = ModelRouter()
+# --- 状态机（注入自定义链，与全局 CHAIN_CONFIG 解耦） ---
+CUSTOM_CHAINS = {
+    "retrieve": [
+        {"provider": "go", "model": "openai/retrieve-a"},
+        {"provider": "bk", "model": "bk/ret-x"},
+    ],
+    "extract": [
+        {"provider": "go", "model": "openai/extract-a"},
+        {"provider": "bk", "model": "bk/ext-x"},
+    ],
+    "vision": [
+        {"provider": "go", "model": "openai/vision-a"},
+        {"provider": "bk", "model": "bk/vis-x"},
+    ],
+}
+
+rt = ModelRouter(CUSTOM_CHAINS, ["go", "bk"])
 rt.mark_quota("go", time.time() + 5000)
-check("go cooling -> pick dashscope", rt.pick_provider() == "dashscope")
-check("model_for retrieve/dashscope", rt.model_for("retrieve", "dashscope") == "dashscope/qwen-turbo")
-check("model_for extract/go", rt.model_for("extract", "go") == "openai/qwen3.7-plus")
-rt.mark_quota("dashscope", time.time() + 5000)
+check("go cooling -> pick bk", rt.pick_provider() == "bk")
+check("model_for retrieve/bk", rt.model_for("retrieve", "bk") == "bk/ret-x")
+check("model_for extract/go", rt.model_for("extract", "go") == "openai/extract-a")
+rt.mark_quota("bk", time.time() + 5000)
 try:
     rt.pick_provider()
     check("both down -> AllProvidersDown", False)
 except AllProvidersDown as e:
-    check("both down -> AllProvidersDown", set(e.cooldowns) == {"go", "dashscope"})
+    check("both down -> AllProvidersDown", set(e.cooldowns) == {"go", "bk"})
 
 # --- provider_for 三元组反查 ---
-p = rt.provider_for({"retrieve": "openai/deepseek-v4-flash",
-                     "extract": "openai/qwen3.7-plus",
-                     "vision": "openai/deepseek-v4-flash-vision-exp"})
+p = rt.provider_for({"retrieve": "openai/retrieve-a",
+                     "extract": "openai/extract-a",
+                     "vision": "openai/vision-a"})
 check("triple -> go", p == "go")
 p = rt.provider_for({"retrieve": "x", "extract": "y", "vision": "z"})
 check("unknown triple -> None", p is None)

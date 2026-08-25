@@ -886,10 +886,11 @@ async def preflight(router: ModelRouter | None = None) -> int:
             print(f"[preflight] {status} [{entry['provider']}/{kind}] {entry['model']} — {detail}", flush=True)
             if alive:
                 ok_by_provider.setdefault(entry["provider"], set()).add(kind)
-            elif ekind == "quota" and ereset:
+            elif ekind in ("quota", "fatal") and ereset:
+                # quota 与 fatal 都要预热冷却——否则 pick_provider 会把论文派给已知死掉的 provider
                 router.mark_quota(entry["provider"], ereset)
                 print(f"[preflight]   -> cooldown primed for '{entry['provider']}' "
-                      f"until {time.strftime('%H:%M:%S', time.localtime(ereset))}", flush=True)
+                      f"({ekind}) until {time.strftime('%H:%M:%S', time.localtime(ereset))}", flush=True)
 
     healthy = [p for p in router.order if ok_by_provider.get(p, set()) >= {"retrieve", "extract", "vision"}]
     if healthy:

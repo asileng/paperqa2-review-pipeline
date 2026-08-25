@@ -21,17 +21,20 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # ---------- 链配置（角色 → 有序备选，越靠前越优先） ----------
-# openai/* 经全局 OPENAI_API_BASE(launch_go.ps1 设定)路由至 Go 网关；
-# dashscope/* 经 DASHSCOPE_API_KEY 路由至阿里云。两套 provider 天然同进程共存。
+# openai/* 经全局 OPENAI_API_BASE(launch_go_v2.ps1 设定)路由至 Go 网关；
+# deepseek/* 经 DEEPSEEK_API_KEY 路由至 DeepSeek 开放平台。
+# 兜底切换史：2026-08-26 dashscope(Access denied 欠费拦截) → deepseek(研究者充值¥50；
+#             注意 DeepSeek App 余额与 API 余额是两本账)。deepseek 无视觉模型，
+#             vision 兜底暂留 dashscope 占位（待其账户修复或改接 moonshot）。
 
 CHAIN_CONFIG = {
     "retrieve": [
         {"provider": "go", "model": "openai/deepseek-v4-flash"},
-        {"provider": "dashscope", "model": "dashscope/qwen-turbo"},
+        {"provider": "deepseek", "model": "deepseek/deepseek-chat"},
     ],
     "extract": [
         {"provider": "go", "model": "openai/qwen3.7-plus"},
-        {"provider": "dashscope", "model": "dashscope/qwen3.7-plus-2026-05-26"},
+        {"provider": "deepseek", "model": "deepseek/deepseek-chat"},
     ],
     "vision": [
         {"provider": "go", "model": "openai/deepseek-v4-flash-vision-exp"},
@@ -39,7 +42,7 @@ CHAIN_CONFIG = {
     ],
 }
 
-PROVIDER_ORDER = ["go", "dashscope"]
+PROVIDER_ORDER = ["go", "deepseek"]
 
 _QUOTA_MSG_RE = re.compile(
     r"(429|too many requests|rate.?limit|quota|insufficient|usage limit|5-hour)", re.IGNORECASE

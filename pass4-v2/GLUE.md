@@ -177,3 +177,17 @@ manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（�
 
 - DashScope 当前 "Access denied / not in good standing"（三模型全拦）→ 充值后仍被拒，
   需研究者核查阿里云账户状态（结算/实名）；未解决前故障转移链为死路，批次将纯 Go 运行。
+
+### 兜底切换：dashscope → deepseek（2026-08-26 晚，研究者裁定）
+
+- 实测事件链：dashscope 全链 "Access denied"（充值后仍拒）→ 研究者裁定兜底换 DeepSeek
+  并充值 ¥50 → 复测仍 "Insufficient Balance"。
+- **关键发现①**：`openai/ox-alpha-free` 不占 workspace 共享桶（Go 全链冷却时独立可用），
+  曾验证 OK——双角色方案曾立项后被研究者取消，此事实留档备用。
+- **关键发现②**：DeepSeek 的 **App 余额与 API 余额是两本账**；key `...a2d1` 认证通过
+  （非 401）但 API 余额为 0，等待研究者核实 platform.deepseek.com「API 充值」入账。
+- 链配置变更（CHAIN_CONFIG）：retrieve/extract 兜底 = `deepseek/deepseek-chat`
+  （chat 而非 reasoner：结构化提取任务无需推理链，成本与延迟更优）；
+  **deepseek 无视觉模型**，vision 兜底暂留 `dashscope/qwen-vl-plus` 占位，
+  moonshot 视觉备选未测（研究者中止了该探测）。
+- PROVIDER_ORDER 更新为 ["go", "deepseek"]；单测改为注入自定义链，与全局配置解耦（17/17）。
