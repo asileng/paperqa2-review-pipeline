@@ -9,3 +9,4 @@ queue/
 hf_cache/
 .playwright-mcp/
 *.tmp
+.codegraph/
