@@ -1,6 +1,6 @@
 # pass4-v2 批量运行报告（跨 provider 路由）
 
-更新时间：2026-08-25T21:17:32.395023+00:00
+更新时间：2026-08-25T21:38:15.913602+00:00
 
 总计 44 篇：done=0 failed=0 pending=0 running=0 deferred=0 cooldown=44
 

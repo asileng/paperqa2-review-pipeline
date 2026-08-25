@@ -112,17 +112,36 @@ async def worker(key: str, entry: dict, sem: asyncio.Semaphore, st: dict,
         try:
             await asyncio.wait_for(
                 run_one(entry, resume=True, archive=True,
-                        update_index=zotero_index, router=router),
+                        update_index=False, router=router),  # 回写统一在下方隔离执行
                 timeout=per_paper_timeout
             )
-            if zotero_index:
-                import zotero_index
-                zotero_index.write_index(key)
+            # 先落盘 done：回写任何故障都不得污染分析结果的状态
             rec["status"] = "done"
             rec["error"] = None
             rec["cooldown_until"] = None
             rec["seconds"] = round(time.time() - t0, 1)
+            save_state(st)
             log("batch", f"{key} DONE in {rec['seconds']}s")
+            if zotero_index:
+                # 回写隔离（研究者裁定：回写故障绝不拖累文献工作）：
+                # to_thread 防阻塞事件循环 + 120s 硬闸防悬挂 + 捕获 SystemExit/Exception，
+                # 失败仅记 zotero_error 字段，状态保持 done，批次继续。
+                try:
+                    import zotero_index
+                    note_key = await asyncio.wait_for(
+                        asyncio.to_thread(zotero_index.write_index, key), timeout=120
+                    )
+                    rec["zotero_note"] = note_key
+                    log("batch", f"{key} zotero index ok: {note_key}")
+                except SystemExit as se:
+                    rec["zotero_error"] = str(se)[:220]
+                    log("batch", f"{key} ZOTERO-SKIP (SystemExit): {str(se)[:120]}")
+                except asyncio.TimeoutError:
+                    rec["zotero_error"] = "zotero writeback timeout >120s"
+                    log("batch", f"{key} ZOTERO-TIMEOUT (>120s) — paper stays done")
+                except Exception as exc:
+                    rec["zotero_error"] = f"{type(exc).__name__}: {str(exc)[:180]}"
+                    log("batch", f"{key} ZOTERO-FAIL (non-blocking): {exc}")
         except asyncio.TimeoutError:
             rec["status"] = "failed"
             rec["error"] = f"per-paper timeout {per_paper_timeout}s"
