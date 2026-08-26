@@ -212,3 +212,12 @@ manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（�
 - 初版以 ASCII 写入含中文路径的 cd /d 行 → 路径乱码为 ??，CIM 发射时 cd 必失败。
 - 已修复：UTF-8 无 BOM 重写并回写正确中文路径。教训：生成含非 ASCII 路径的 .cmd
   一律 UTF-8 无 BOM（或 OEM/GBK 视控制台代码页），写后必须回读验证关键字段。
+
+### 资金停机熔断（8be1028/0290344 补登记）
+
+- note_error 对 'insufficient balance' 类错误计数，连续 ≥3 次 → router.funding_halt=True；
+  batch amain 每轮 gather 后检查 → 优雅停批 exit 2 + ACTION REQUIRED 大声标记，
+  替代旧版无限 30min 冷却空转。实测触发于 14:19 唤醒（×4）。
+- save_state 防崩改造：重试 ×3 + 旁文件兜底 + worker 尾部保存加保护——
+  记账故障永不杀批（此前 WinError5 曾穿透 asyncio.gather 杀死整批）。
+- 单测曾逮住本次改动误删 fatal 分支的回归（0290344 补回），21/21 PASS。
