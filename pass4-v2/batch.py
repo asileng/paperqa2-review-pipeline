@@ -49,10 +49,28 @@ def load_state(queue_keys: list[str]) -> dict:
 
 
 def save_state(st: dict) -> None:
+    """原子落盘，但记账永不杀批：重试 3 次后退化为旁文件，绝不向上抛。"""
     st["updated_utc"] = now()
-    tmp = MANIFEST.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(st, ensure_ascii=False, indent=1), encoding="utf-8")
-    tmp.replace(MANIFEST)
+    payload = json.dumps(st, ensure_ascii=False, indent=1)
+    target = MANIFEST
+    for attempt in range(3):
+        tmp = target.with_suffix(f".json.tmp{attempt}")
+        try:
+            tmp.write_text(payload, encoding="utf-8")
+            tmp.replace(target)
+            return
+        except PermissionError as exc:
+            log("batch", f"WARN manifest write blocked (attempt {attempt+1}/3): {exc}")
+            time.sleep(1.5 * (attempt + 1))
+        except Exception as exc:
+            log("batch", f"WARN manifest write failed (attempt {attempt+1}/3): {exc}")
+            time.sleep(1.5 * (attempt + 1))
+    side = MANIFEST.with_suffix(f".json.recovered-{datetime.now(timezone.utc).strftime('%H%M%S')}")
+    try:
+        side.write_text(payload, encoding="utf-8")
+        log("batch", f"manifest persisted to side file: {side.name} (main locked)")
+    except Exception as exc:
+        log("batch", f"CRITICAL manifest unpersisted this tick: {exc}")
 
 
 def _fmt_epoch(t) -> str:
@@ -164,8 +182,11 @@ async def worker(key: str, entry: dict, sem: asyncio.Semaphore, st: dict,
             rec["status"] = "failed"
             rec["error"] = str(exc)[:400]
             log("batch", f"{key} FAILED: {exc}")
-        rec["finished_utc"] = now()
-        save_state(st)
+        try:
+            rec["finished_utc"] = now()
+            save_state(st)
+        except Exception as exc:
+            log("batch", f"{key} WARN final state-save failed (non-fatal): {exc}")
 
 
 def _cooldown_ready(rec: dict) -> bool:
@@ -238,6 +259,13 @@ async def amain(args) -> int:
                  for k in targets]
         await asyncio.gather(*tasks)
         write_report(st, by_key)
+        if getattr(router, "funding_halt", False):
+            # 资金停机熔断：余额类错误连续出现，重试无意义——优雅停批并大声标记
+            log("batch", f"FUNDING HALT — {router.funding_halt_reason}")
+            log("batch", "ACTION REQUIRED: 充值 platform.deepseek.com 的 API 余额后重新发射 "
+                         "(launch via run_deepseek_batch.cmd)")
+            write_report(st, by_key)
+            return 2
         if deadline and time.time() > deadline:
             log("batch", "--max-hours reached; stopping")
             break

@@ -148,6 +148,9 @@ class ModelRouter:
         self.chains = chains or CHAIN_CONFIG
         self.order = provider_order or PROVIDER_ORDER
         self._cooldown: dict[str, float] = {}
+        self.funding_halt = False
+        self.funding_halt_reason: str | None = None
+        self._insufficient_streak = 0
 
     # -- 状态 --
 
@@ -163,9 +166,20 @@ class ModelRouter:
     def note_error(self, exc: Exception, provider: str) -> str:
         """分类并登记。quota→按解析出的重置时间登记冷却；fatal→provider 整体冷却
         PROVIDER_FATAL_COOLDOWN_SECONDS；两者都抛 QuotaExhausted（batch 记 cooldown）。
-        transient/other→返回 kind，由调用方决定（通常走既有重试或失败）。"""
+        transient/other→返回 kind，由调用方决定（通常走既有重试或失败）。
+
+        资金停机熔断：'insufficient balance' 类错误连续 ≥3 次时置 funding_halt——
+        余额问题重试无意义，batch 检测后应优雅停批而非无限 30min 空转。
+        """
         kind, reset = classify_llm_error(exc)
-        if kind in ("quota", "fatal"):
+        if kind == "quota":
+            if "insufficient balance" in str(exc).lower():
+                self._insufficient_streak = getattr(self, "_insufficient_streak", 0) + 1
+                if self._insufficient_streak >= 3:
+                    self.funding_halt = True
+                    self.funding_halt_reason = f"Insufficient Balance x{self._insufficient_streak}: {str(exc)[:160]}"
+            else:
+                self._insufficient_streak = 0
             self.mark_quota(provider, reset)
             raise QuotaExhausted(provider, reset) from exc
         return kind
