@@ -182,6 +182,9 @@ class ModelRouter:
                 self._insufficient_streak = 0
             self.mark_quota(provider, reset)
             raise QuotaExhausted(provider, reset) from exc
+        if kind == "fatal":
+            self.mark_quota(provider, reset)
+            raise QuotaExhausted(provider, reset) from exc
         return kind
 
     # -- 选择 --
