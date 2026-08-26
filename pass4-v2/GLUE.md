@@ -206,3 +206,9 @@ manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（�
   **deepseek 无视觉模型**，vision 兜底暂留 `dashscope/qwen-vl-plus` 占位，
   moonshot 视觉备选未测（研究者中止了该探测）。
 - PROVIDER_ORDER 更新为 ["go", "deepseek"]；单测改为注入自定义链，与全局配置解耦（17/17）。
+
+### 附：run_deepseek_batch.cmd 编码缺陷（Momus 审查前自纠）
+
+- 初版以 ASCII 写入含中文路径的 cd /d 行 → 路径乱码为 ??，CIM 发射时 cd 必失败。
+- 已修复：UTF-8 无 BOM 重写并回写正确中文路径。教训：生成含非 ASCII 路径的 .cmd
+  一律 UTF-8 无 BOM（或 OEM/GBK 视控制台代码页），写后必须回读验证关键字段。
