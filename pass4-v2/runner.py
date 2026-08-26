@@ -823,7 +823,9 @@ def build_settings(retrieve_model: str, vision_model: str) -> Settings:
     key = (retrieve_model, vision_model)
     if key not in _SETTINGS_CACHE:
         s = Settings(llm=retrieve_model, summary_llm=retrieve_model, embedding=EMBED, temperature=0.0)
-        s.parsing.enrichment_llm = vision_model
+        if vision_model != "none":  # 实验偏离：none = 跳过图注增强（纯文本索引，数字版 PDF 可接受）
+            s.parsing.enrichment_llm = vision_model
+        s.agent.agent_llm = retrieve_model  # 钉定代理槽位：paperqa 默认 gpt-4o 不在 Go 网关（08:14 故障根因）
         _SETTINGS_CACHE[key] = s
     return _SETTINGS_CACHE[key]
 
@@ -877,10 +879,14 @@ async def preflight(router: ModelRouter | None = None) -> int:
     seen: set = set()
     for kind in ("retrieve", "extract", "vision"):
         for entry in router.chains[kind]:
-            tag = (entry["provider"], entry["model"])
+            tag = (entry["provider"], kind, entry["model"])  # 按角色去重：同模型可服务于多角色
             if tag in seen:
                 continue
             seen.add(tag)
+            if entry["model"] == "none":  # 实验偏离：哨兵角色不探针、直接视为健康
+                print(f"[preflight] SKIP [{entry['provider']}/{kind}] model=none (role disabled)", flush=True)
+                ok_by_provider.setdefault(entry["provider"], set()).add(kind)
+                continue
             alive, detail, ekind, ereset = await _probe_one(entry["model"])
             status = "OK " if alive else "DOWN"
             print(f"[preflight] {status} [{entry['provider']}/{kind}] {entry['model']} — {detail}", flush=True)

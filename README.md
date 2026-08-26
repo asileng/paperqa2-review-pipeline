@@ -17,7 +17,78 @@ pass4-v1 ──(4-Pass 逐字提示词管线, 批量队列)───────
 | `archive/pass4-v1` | 4-Pass（Retrieval A/B → 合并池 → Extraction）+ Design Gate(A/B/C) + 概念回填；asyncio 批量队列 | 提示词逐字来自 `specs/important-guide-for-paperQA2.md`，批量无人值守 |
 | **`pass4-v2/`** | pass4-v1 全部能力 + Zotero 索引写回层（`zotero_index.py`） | **当前活跃** |
 
-## 快速开始
+## 快速开始（Clone → Run）
+
+### 前置条件
+
+- Python 3.11+（推荐 conda 管理环境）
+- Zotero 桌面版 10+（仅 Zotero 写回功能需要；分析本身不需要）
+
+### 安装
+
+```powershell
+git clone https://github.com/asileng/paperqa2-review-pipeline.git
+cd paperqa2-review-pipeline
+
+# 创建环境
+conda create -n paperqa python=3.11 -y
+conda activate paperqa
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 预下载嵌入模型（首次 ~2GB，之后离线可用）
+python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-m3')"
+```
+
+### 配置
+
+```powershell
+# 复制环境变量模板并填入实际值
+Copy-Item .env.example .env
+# 编辑 .env 设置 LLM 供应商凭证（详见文件内注释）
+```
+
+支持两种 LLM 供应商：
+| 供应商 | 认证方式 | 适用场景 |
+|---|---|---|
+| OpenCode Go 套餐 | auth.json 自动读取 | 免费/低额度测试 |
+| DashScope（阿里云） | DASHSCOPE_API_KEY 环境变量 | 正式批量运行 |
+
+### 运行
+
+```powershell
+cd pass4-v2
+
+# 五项预检（env/PIL/LLM/VLM/embedding）
+python runner.py --preflight
+
+# 单篇分析
+python runner.py <ZOTERO_KEY>
+
+# 批量分析（并发 3，冷却自动等待重试）
+python batch.py --include <KEY1> <KEY2> ... --concurrency 3 --max-hours 12
+
+# 分析完成后写回 Zotero 索引子笔记
+python runner.py <ZOTERO_KEY> --zotero-index-only
+```
+
+### 目录结构说明
+
+首次运行会自动创建以下目录：
+
+```
+pass4-v2/
+├── results/<ZOTERO_KEY>/     # 每篇论文的分析产物
+│   ├── <KEY>.record.json     # 结构化记录（schema v2）
+│   ├── structured_record.md  # 可读版本
+│   ├── e1-e4.answer.md       # 各 Pass 提取产物
+│   ├── pools/                # 证据池快照
+│   ├── backfill/             # 概念定义回填
+│   └── docs.pkl              # PDF 索引检查点（~1MB/篇）
+├── logs/                     # 运行日志
+└── queue/                    # 论文队列 JSON
+```
 
 ```powershell
 # 环境：conda env paperqa (python 3.11, pip install "paper-qa[local]>=5" pillow)

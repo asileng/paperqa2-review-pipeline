@@ -1,0 +1,17 @@
+# Core engine
+paper-qa[local]>=5
+litellm>=1.0
+
+# PDF / image processing
+pillow>=10.0
+pymupdf>=1.24
+
+# Embedding (local bge-m3)
+sentence-transformers>=2.0
+
+# Zotero Local API credential storage (Windows Credential Manager)
+keyring>=24.0
+cryptography>=41.0
+
+# Optional: vision model support via litellm
+# (no extra package needed; uses litellm's OpenAI-compatible routing)

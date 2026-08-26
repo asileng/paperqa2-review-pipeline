@@ -10,3 +10,5 @@ hf_cache/
 .playwright-mcp/
 *.tmp
 .codegraph/
+.env
+lib/__pycache__/
