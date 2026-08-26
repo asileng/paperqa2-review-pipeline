@@ -1,8 +1,0 @@
-{
-  "chains": {
-    "retrieve": [{"provider": "go", "model": "openai/ox-alpha-free"}],
-    "extract":  [{"provider": "go", "model": "openai/ox-alpha-free"}],
-    "vision":   [{"provider": "go", "model": "openai/deepseek-v4-flash-vision-exp"}]
-  },
-  "provider_order": ["go"]
-}

@@ -2,6 +2,8 @@ __pycache__/
 *.pyc
 results/
 results-archive/
+REPORT.md
+run_manifest.json
 logs/
 papers/
 *.pkl

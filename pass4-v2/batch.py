@@ -262,8 +262,7 @@ async def amain(args) -> int:
         if getattr(router, "funding_halt", False):
             # 资金停机熔断：余额类错误连续出现，重试无意义——优雅停批并大声标记
             log("batch", f"FUNDING HALT — {router.funding_halt_reason}")
-            log("batch", "ACTION REQUIRED: 充值 platform.deepseek.com 的 API 余额后重新发射 "
-                         "(launch via run_deepseek_batch.cmd)")
+            log("batch", "ACTION REQUIRED: 补充可用 provider 的 API 余额后，使用 batch.py 重新发射。")
             write_report(st, by_key)
             return 2
         if deadline and time.time() > deadline:

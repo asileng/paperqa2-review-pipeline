@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""pass4-v2 Zotero 索引写回层（自 pilot-v1 v3 移植，数据源改为 record.json）。
+"""pass4-v2 Zotero 索引写回层。
 
 规范（研究者批准）：
 - 一（条目 × provider×管线版本）一笔记：标签 [reviewBricks:pass4-v2][provider:paperqa2_docs_local]

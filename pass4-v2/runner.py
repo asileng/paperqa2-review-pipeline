@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""pass4-v1 单篇管线 runner。
+"""pass4-v2 单篇管线 runner。
 
 忠实执行 important-guide-for-paperQA2.md 的 4-Pass 结构：
 每 Pass = Retrieval A/B（aget_evidence 只积累证据）→ 合并池 → 单次 Extraction 生成。
@@ -72,7 +72,7 @@ _CHUNK_ID_RE = re.compile(r"\bpqac-[0-9a-f]+\b")
 _CITATION_SCHEME_BASE = "paperqa_doc_keys_author_year"
 
 
-# ---------- 基础工具（沿袭 pilot-v2 模式） ----------
+# ---------- 基础工具 ----------
 
 def sha256_of(path: Path) -> str:
     h = hashlib.sha256()
