@@ -90,6 +90,28 @@ check("triple -> go", p == "go")
 p = rt.provider_for({"retrieve": "x", "extract": "y", "vision": "z"})
 check("unknown triple -> None", p is None)
 
+# --- 角色能力过滤（真实事故回归：deepseek 无 vision 条目曾被错派整篇） ---
+partial = {
+    "retrieve": [{"provider": "go", "model": "g/r"}, {"provider": "ds", "model": "d/r"}],
+    "extract":  [{"provider": "go", "model": "g/e"}, {"provider": "ds", "model": "d/e"}],
+    "vision":   [{"provider": "go", "model": "g/v"}],   # ds 无 vision
+}
+rt3 = ModelRouter(partial, ["go", "ds"])
+rt3.mark_quota("go", time.time() + 4000)
+try:
+    rt3.pick_provider()
+    check("role-incapable provider skipped -> AllProvidersDown(min=go reset)", False)
+except AllProvidersDown as e:
+    check("role-incapable provider skipped -> AllProvidersDown",
+          set(e.cooldowns) == {"go"} and 3900 <= e.cooldowns["go"] - time.time() <= 4100)
+rt4 = ModelRouter(partial, ["go", "ds"])
+check("capable go picked when healthy", rt4.pick_provider() == "go")
+try:
+    rt4.pick_provider(force="ds")
+    check("force incapable -> AllProvidersDown", False)
+except AllProvidersDown:
+    check("force incapable -> AllProvidersDown", True)
+
 # --- note_error 行为 ---
 rt2 = ModelRouter()
 try:

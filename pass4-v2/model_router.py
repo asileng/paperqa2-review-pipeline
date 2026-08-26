@@ -172,13 +172,24 @@ class ModelRouter:
 
     # -- 选择 --
 
+    def _capable(self, provider: str) -> bool:
+        """provider 必须能同时供给全部角色（retrieve/extract/vision）才有整篇承接资格。"""
+        return all(
+            any(e["provider"] == provider for e in entries)
+            for entries in self.chains.values()
+        )
+
     def pick_provider(self, prefer_first: bool = True, force: str | None = None) -> str:
         if force:
+            if not self._capable(force):
+                raise AllProvidersDown({})  # 无资格等价于不可用
             if self.cooldown_remaining(force) > 0:
                 raise QuotaExhausted(force, time.time() + self.cooldown_remaining(force))
             return force
         for p in self.order:
-            if self.cooldown_remaining(p) <= 0:
+            # 关键：capability 过滤——deepseek 无视觉模型时绝不作为整篇 provider，
+            # 否则应等待有全角色的 provider 冷却重置（AllProvidersDown 携带最早重置点）
+            if self._capable(p) and self.cooldown_remaining(p) <= 0:
                 return p
         raise AllProvidersDown(self.cooldowns())
 
