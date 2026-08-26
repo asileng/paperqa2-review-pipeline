@@ -1,0 +1,8 @@
+{
+ "chains": {
+  "retrieve": [{"provider": "deepseek", "model": "deepseek/deepseek-chat"}],
+  "extract": [{"provider": "deepseek", "model": "deepseek/deepseek-chat"}],
+  "vision": [{"provider": "deepseek", "model": "deepseek/deepseek-chat"}]
+ },
+ "provider_order": ["deepseek"]
+}

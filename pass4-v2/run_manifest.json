@@ -1,363 +1,767 @@
 {
  "schema": "pass4-v2-manifest",
- "created_utc": "2026-08-25T20:58:38.144614+00:00",
+ "created_utc": "2026-08-26T04:00:57.727574+00:00",
  "papers": {
-  "DJICIQIL": {
+  "2KTS2E7I": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "quota: provider 'dashscope' quota exhausted, resets at 2026-08-26 11:00:44 (in 21600s)",
-   "started_utc": "2026-08-25T20:58:59.942977+00:00",
-   "provider": "dashscope",
-   "cooldown_until": 1787713244.0895872,
-   "finished_utc": "2026-08-25T21:00:44.093847+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.318410+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.330410+00:00"
   },
-  "XVC52ZGY": {
+  "E57C93QP": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "quota: provider 'dashscope' quota exhausted, resets at 2026-08-26 10:59:49 (in 21600s)",
-   "started_utc": "2026-08-25T20:58:59.944977+00:00",
-   "provider": "dashscope",
-   "cooldown_until": 1787713189.1228974,
-   "finished_utc": "2026-08-25T20:59:49.124231+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.321417+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.333411+00:00"
   },
-  "86CXZH5B": {
+  "SR4QFYVU": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "quota: provider 'dashscope' quota exhausted, resets at 2026-08-26 11:00:45 (in 21600s)",
-   "started_utc": "2026-08-25T20:58:59.946975+00:00",
-   "provider": "dashscope",
-   "cooldown_until": 1787713245.3116157,
-   "finished_utc": "2026-08-25T21:00:45.312123+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.324410+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.336418+00:00"
   },
-  "8LSDKF8A": {
+  "HVHQ9UET": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "quota: provider 'dashscope' quota exhausted, resets at 2026-08-26 11:00:43 (in 21600s)",
-   "started_utc": "2026-08-25T20:58:59.948974+00:00",
-   "provider": "dashscope",
-   "cooldown_until": 1787713243.8300486,
-   "finished_utc": "2026-08-25T21:00:43.831055+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.327435+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.338417+00:00"
   },
-  "AQPKMIGX": {
+  "MG6TUQ79": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.127250+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.131467+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.340417+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.350433+00:00"
   },
-  "USUVR386": {
+  "PR5UE9RX": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.134305+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.138769+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.342417+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.352927+00:00"
   },
-  "XAD76IGP": {
+  "TIL9V4FX": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.140778+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.144781+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.345431+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.354937+00:00"
   },
-  "E23L3VHP": {
+  "IQM8BGS8": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.146782+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.151663+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.347419+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.357944+00:00"
   },
-  "FXB2NCHM": {
+  "8FR6P98Y": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.154092+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.156925+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.359937+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.371064+00:00"
   },
-  "UUTBWC67": {
+  "HLPQL9J6": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.159639+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.164864+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.361938+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.374068+00:00"
   },
-  "J37889TF": {
+  "QYV6ZHKU": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.167329+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.171548+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.364941+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.376072+00:00"
   },
-  "VZCYMTY5": {
+  "H2XXAZDB": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.173828+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.177645+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.368068+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.379074+00:00"
   },
-  "XM7ZLXBT": {
+  "U3BNM8FK": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.180657+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.185739+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.382072+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.395200+00:00"
   },
-  "UHKIUAAB": {
+  "ZSFRJSAQ": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.187737+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.192751+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.385074+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.398240+00:00"
   },
-  "JS7DDANC": {
+  "YVBCCZJ3": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.194750+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.199950+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.387078+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.401219+00:00"
   },
-  "FYD6PEBJ": {
+  "ZEKTH2BN": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.201421+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.206739+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.390081+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.403212+00:00"
   },
-  "2DIGX7WK": {
+  "RG9GDVQG": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.207997+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.212032+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.406214+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.419740+00:00"
   },
-  "SKP4YTPQ": {
+  "X9Q8DM7N": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.214694+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.217787+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.409212+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.421735+00:00"
   },
-  "AMYIMZZN": {
+  "2MTUKBDT": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.219794+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.223975+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.412735+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.424458+00:00"
   },
-  "LXWBZ3WM": {
+  "IYW2IPGG": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.225986+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.229989+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.416737+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.427468+00:00"
   },
-  "DBBMXVEY": {
+  "KPYCANZT": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.232740+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.236037+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.430470+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.442482+00:00"
   },
-  "UNEWQELR": {
+  "SGGP24T2": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.239037+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.245212+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.432468+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.444506+00:00"
   },
-  "XZFSJRYD": {
+  "FD7HU7PK": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.247856+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.251338+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.435489+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.447480+00:00"
   },
-  "BMPCDAQJ": {
+  "27NL2CBW": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.253666+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.258174+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.437471+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.449483+00:00"
   },
-  "VBBQJZAB": {
+  "FLCRZHEJ": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.260379+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.264505+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.452483+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.463578+00:00"
   },
-  "V4AUKFVF": {
+  "ZK2HTCV6": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.267693+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.271107+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.455579+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.465582+00:00"
   },
-  "6QFXQUNA": {
+  "99VBFIKX": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.272578+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.276330+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.457576+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.467577+00:00"
   },
-  "DCFNEKN4": {
+  "R7EFLRQZ": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.278817+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.282845+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.459582+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.470578+00:00"
   },
-  "VBUBG9BU": {
+  "4DQJLBE2": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.283847+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.287799+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.473581+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.484581+00:00"
   },
-  "G89R825J": {
+  "3IE6EMZA": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.290407+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.293983+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.475577+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.487577+00:00"
   },
-  "MJUWZITR": {
+  "EFQDATYP": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.295985+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.299267+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.478607+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.490596+00:00"
   },
-  "HXKRUPYI": {
+  "L7X8D3Z9": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.302674+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.305577+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.481581+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.492590+00:00"
   },
-  "KGJ828E4": {
+  "75BHVQB8": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.308006+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.311334+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.495587+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.506695+00:00"
   },
-  "GMW4LBQU": {
+  "49PQMX7B": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.314112+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.318199+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.497592+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.509692+00:00"
   },
-  "P6XQPYEA": {
+  "9R4IS86T": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.321002+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.325425+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.500591+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.512690+00:00"
   },
-  "V8NWC7ZT": {
+  "JFKHCZWB": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.327767+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.331353+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.502591+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.515690+00:00"
   },
-  "REGHBDBJ": {
+  "HI79K6FY": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.334353+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.338348+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.518694+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.534694+00:00"
   },
-  "BFENLUNZ": {
+  "LAEMMKVV": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.341348+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.345346+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.522691+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.538704+00:00"
   },
-  "DJVBG23F": {
+  "88HH3LF6": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.348459+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.351472+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.525692+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.540710+00:00"
   },
-  "BKQ7F9KB": {
+  "T4594T98": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.353799+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.357230+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.529696+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.543711+00:00"
   },
-  "MZ96YDPY": {
+  "UZG5NY6T": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.360241+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.363780+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.546706+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.557819+00:00"
   },
-  "55BE86U9": {
+  "I984TTL3": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.365207+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.369384+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.549704+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.559827+00:00"
   },
-  "8NQCIM4T": {
+  "JHQUZCC5": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.371833+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.376722+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.552707+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.562818+00:00"
   },
-  "YMBIMQR9": {
+  "NI7MUWPK": {
    "status": "cooldown",
    "attempts": 1,
-   "error": "all providers down: all providers in cooldown — dashscope: reset 10:59:49; go: reset 08:01:59",
-   "started_utc": "2026-08-25T20:59:49.379157+00:00",
-   "cooldown_until": 1787702519.7401438,
-   "finished_utc": "2026-08-25T20:59:49.382686+00:00"
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.554819+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.565821+00:00"
+  },
+  "WS7CJWC9": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.568822+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.579819+00:00"
+  },
+  "LPKWSYPY": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.571817+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.581819+00:00"
+  },
+  "QNBBLKIA": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.573818+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.584817+00:00"
+  },
+  "JP62DXXI": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.575819+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.587834+00:00"
+  },
+  "BIYLM34C": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.589820+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.602822+00:00"
+  },
+  "R64D84N8": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.592825+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.604820+00:00"
+  },
+  "3FVEMXRQ": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.595818+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.607824+00:00"
+  },
+  "E85UDNIZ": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.598818+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.609823+00:00"
+  },
+  "BUBG6ZQL": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.612816+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.625824+00:00"
+  },
+  "9FIRAW8X": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.615818+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.628819+00:00"
+  },
+  "XM9QGPY7": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.618821+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.631848+00:00"
+  },
+  "6VPS9M3E": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.621823+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.633940+00:00"
+  },
+  "UEK7BJ2H": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.637053+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.650808+00:00"
+  },
+  "IJJSVEKU": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.640197+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.655389+00:00"
+  },
+  "JLX4JM8C": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.643318+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.658386+00:00"
+  },
+  "IBKZ7NLX": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.645785+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.661395+00:00"
+  },
+  "UGN9L7YX": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.664385+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.676396+00:00"
+  },
+  "4YI29Y8Q": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.667385+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.679397+00:00"
+  },
+  "RCPSHZLQ": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.670393+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.682397+00:00"
+  },
+  "BDNMHSLC": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.672386+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.684397+00:00"
+  },
+  "TVWAHADX": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.687394+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.700148+00:00"
+  },
+  "GBK84GX6": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.689396+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.703149+00:00"
+  },
+  "ZGGRS4H2": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.693143+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.706146+00:00"
+  },
+  "LHX353KV": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.697145+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.709145+00:00"
+  },
+  "974A9W6D": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.712150+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.725153+00:00"
+  },
+  "AE7BZBCA": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.716142+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.728157+00:00"
+  },
+  "44MGCR8N": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.718151+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.732344+00:00"
+  },
+  "FLMAFZ2S": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.721150+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.735344+00:00"
+  },
+  "3U32T3XQ": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.738362+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.750353+00:00"
+  },
+  "TLJ5PGGI": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.741355+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.753902+00:00"
+  },
+  "EZ9LF4UA": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.744351+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.757897+00:00"
+  },
+  "SI5JMFKU": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.747352+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.760898+00:00"
+  },
+  "MFGKEQB3": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.764897+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.781789+00:00"
+  },
+  "R3THVGD5": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.767897+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.785792+00:00"
+  },
+  "6PFHRJCU": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.772788+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.788787+00:00"
+  },
+  "VQKSSRC5": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.775789+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.791789+00:00"
+  },
+  "X99548WS": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.794786+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.809789+00:00"
+  },
+  "CVCWPS6K": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.797787+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.813791+00:00"
+  },
+  "FML8EX7H": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.801792+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.816620+00:00"
+  },
+  "VPF3F77E": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.805789+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.820968+00:00"
+  },
+  "T852IRQW": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.824219+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.837717+00:00"
+  },
+  "8IKU9MX8": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.827442+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.840729+00:00"
+  },
+  "RQ84Y8YU": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.830698+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.843725+00:00"
+  },
+  "TKBMAUKB": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.833719+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.847728+00:00"
+  },
+  "TD4K2Q3K": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.851728+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.866260+00:00"
+  },
+  "EYXXXSLT": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.855258+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.869258+00:00"
+  },
+  "NK427LSX": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.858262+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.872258+00:00"
+  },
+  "WYACIP72": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.861257+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.875258+00:00"
+  },
+  "R3SAD5NF": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.878261+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.888259+00:00"
+  },
+  "Z8WZRFJG": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.881258+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.891261+00:00"
+  },
+  "4HCHQI3E": {
+   "status": "cooldown",
+   "attempts": 1,
+   "error": "all providers down: all providers in cooldown — deepseek: reset 12:31:20",
+   "started_utc": "2026-08-26T04:01:20.884259+00:00",
+   "cooldown_until": 1787718680.3164117,
+   "finished_utc": "2026-08-26T04:01:20.896258+00:00"
   }
  },
- "updated_utc": "2026-08-25T21:00:45.312123+00:00"
+ "updated_utc": "2026-08-26T04:01:20.896258+00:00"
 }

@@ -177,7 +177,8 @@ async def amain(args) -> int:
     chains, order = load_router_config(Path(args.router_config) if args.router_config else None)
     router = ModelRouter(chains, order)
 
-    queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    queue_path = Path(getattr(args, "queue", None) or QUEUE_PATH)
+    queue = json.loads(queue_path.read_text(encoding="utf-8"))
     by_key = {p["zotero_key"]: p for p in queue["papers"]}
     include = set(args.include) if args.include else None
     keys = [k for k in [p["zotero_key"] for p in queue["papers"]] if not include or k in include]
@@ -259,6 +260,8 @@ def main() -> int:
     p.add_argument("--book-last", default="YMBIMQR9")
     p.add_argument("--zotero-index", action="store_true",
                    help="after each successful paper, write/update its pass4-v2 Zotero index note")
+    p.add_argument("--queue", default=str(QUEUE_PATH),
+                   help="papers queue json path (default: queue/papers_queue.json)")
     p.add_argument("--router-config", default="", help="optional JSON overriding chains/provider order")
     p.add_argument("--no-probe", action="store_true",
                    help="skip startup chain probing (cooldown then discovered at runtime)")
