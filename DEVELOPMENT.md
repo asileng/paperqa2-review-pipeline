@@ -5,6 +5,44 @@
 
 ---
 
+## P0：架构级重构——从硬编码到配置驱动管线
+
+> **问题**：当前管线将大量应由用户决定的参数硬编码在代码中。
+> 研究者指出："很多落后的东西和应该允许用户自主设定的东西被错误写入了固有层级。"
+> 这导致每次换供应商/换模型/换分析模式都需要改代码，而非改配置。
+
+### 硬编码清单
+
+| # | 硬编码项 | 当前值 | 位置 | 应改为 |
+|---|---|---|---|---|
+| H1 | LLM 默认模型 | `dashscope/qwen3.7-plus-2026-05-26` | runner.py L55 | 配置文件选择，无 DashScope 假设 |
+| H2 | VLM 默认模型 | `dashscope/qwen-vl-plus` | runner.py L56 | 同上 |
+| H3 | 嵌入模型 | `hybrid-st-BAAI/bge-m3` | runner.py L57，**无环境变量覆盖** | 配置文件 |
+| H4 | 提示词模板 | 固定 16 个文件，无模式选择 | prompts/*.md | 模板目录可选 + 模式参数 |
+| H5 | Pass 结构刚性 | 无法跳过 PASS 4 / 回填 / Gate | runner.py 硬编码流程 | 配置项：`skip_pass4`, `skip_backfill` |
+| H6 | 回填上限 | `P4_BACKFILL_CAP=5` | 环境变量，命名晦涩 | 配置文件 + README 文档化 |
+| H7 | SECTIONS 输出解析列表 | 硬编码中文标题列表 | runner.py | 配置文件或自动检测 |
+| H8 | Zotero 库 ID | `group:6583681` | zotero_index.py L16 | 配置文件 |
+| H9 | 笔记标签格式 | `[reviewBricks:pass4-v2][provider:...]` | zotero_index.py L17 | 配置文件 |
+| H10 | 超时命名晦涩 | `P4_T_INDEX/P4_T_RETRIEVE/P4_T_GENERATE` | 环境变量 | 统一入配置文件并文档化 |
+| H11 | 路由链默认含 dashscope | `CHAIN_CONFIG` 内置 dashscope 条目 | model_router.py | 外部 JSON 全量覆盖 |
+| H12 | agent_llm 无配置入口 | 需改代码才能钉定 | runner.py build_settings() | 配置文件 |
+| H13 | 输出格式固定 | structured_record.md 格式不可选 | runner.py 装配逻辑 | 可选输出模板 |
+| H14 | 提示词语言固定 | 中文输出写死在全局规则块内 | 00_global_rules.md | 可配置输出语言 |
+
+### 改进方向
+
+- 新建 `pipeline_config.json` 作为唯一配置源，替代散落的环境变量和硬编码常量
+- 所有 H1–H14 项迁入该配置文件，附带注释文档
+- 交互式发射器（P2）从此配置文件读取默认值、允许用户逐项覆盖
+- 保持向后兼容：环境变量仍可覆盖配置文件，但配置文件是主入口
+
+### 状态
+
+☐ 待实施（需研究者批准架构方案后启动）
+
+---
+
 ## P1：batch.py 冷却默认等待重试
 
 - **现状**：`--wait-reset` 默认 False，冷却时进程退场，需手动重发
