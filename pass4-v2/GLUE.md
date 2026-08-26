@@ -180,6 +180,21 @@ manifest/report 原子更新、--max-hours 总闸。断点续跑 = 产物级（�
 
 ### 兜底切换：dashscope → deepseek（2026-08-26 晚，研究者裁定）
 
+### 全量 deepseek 执行（2026-08-26 午后，范围纠正后发射）
+
+- **范围纠正（研究者点破的项目级错误）**：真实目标 = 研究者**个人库 users/0** 四分类
+  及物性+NLP / LLM-enactment-多模态 / VLM 词汇学习 / On Verbs；此前整夜的 44 篇队列
+  属于群库另一语料（otome/companionship/relationship++），17 篇完成全部不命中目标。
+- 新构建器 `build_queue_user_collections.py`：模糊匹配分类名 → top items → 子附件解析
+  本地 PDF（storage\<attKey>\文件名）→ sha256 首见去重 → excluded[] 显式上报。
+  实测：**95 篇入选 / 24 排除**。
+- `router_deepseek_full.json`：三角色全 deepseek/deepseek-chat。**vision 为占位**——
+  deepseek 平台无视觉模型，moonshot key 实测 Invalid Authentication；扫描版 PDF 的图像
+  增强会显式失败（诚实报错），数字文本论文不受影响。后续可换真视觉模型只需改此文件。
+- batch.py 新增 --queue；发射走 CIM Win32_Process.Create（句柄脐带禁令执行样本），
+  密钥经环境变量继承、不落盘。
+- 发射即遇瞬时 429 → 分类器 30min 兜底冷却 → 12:31 自愈开跑（自愈路径实战验证）。
+
 - 实测事件链：dashscope 全链 "Access denied"（充值后仍拒）→ 研究者裁定兜底换 DeepSeek
   并充值 ¥50 → 复测仍 "Insufficient Balance"。
 - **关键发现①**：`openai/ox-alpha-free` 不占 workspace 共享桶（Go 全链冷却时独立可用），
